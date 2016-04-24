@@ -22,24 +22,35 @@ w = random.rand(3)
 alpha = 0.2
 
 # Number of iterations
-iterations = 100
+iterations = 0
 
-# Do the training:
-  # 1. Get random input set from training data
-  # 2. Calculate dot product of input and weight vectors
-  # 3. Correct the weights by multiplying error with learning rate
-for i in xrange(iterations):
-  # Grab input set and expected output
-  x, expected = choice(training_data)
+# While we have not converged...
+while True:
+  # Store error count
+  error_count = 0
 
-  # Compute dot product
-  result = dot(w, x)
+  # Increment Iteration count
+  iterations += 1
 
-  # Compute the error
-  error = expected - unit_step(result)
+  # Loop over training data
+  for x, expected in training_data:
 
-  # Update the weights
-  w += alpha * error * x
+    # Compute dot product
+    result = dot(x, w)
+
+    # Compute the error
+    error = expected - unit_step(result)
+
+    # If there was en error, update the weights
+    if error != 0:
+      # Increment error count by 1
+      error_count += 1
+      w += alpha * error * x
+
+  # If there were no weight changes for the entire epoch, we are done training
+  if error_count == 0:
+    print '{} {} {} : {}'.format('Converged in', str(iterations) + ' iterations', 'with weights', w)
+    break
 
 # At this point, our perceptrons should have learned the logical OR function
 for x, _ in training_data:
